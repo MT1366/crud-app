@@ -13,6 +13,8 @@ export default {
         "ocean-light": "#4A53B2",
         "pale-blue": "#EDF0F6",
         "pale-green": "#3C9379",
+        bgsoft: "#2e374a",
+        bgdark: "#182237",
       },
       width: {
         10: "8vw",
@@ -29,9 +31,6 @@ export default {
         52: "60vw",
         53: "70vw",
         54: "75vw",
-        55: "80vw",
-        56: "90vw",
-        100: "100vw",
         101: "45rem",
       },
       height: {

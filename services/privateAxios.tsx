@@ -1,16 +1,18 @@
 import axios from "axios";
-import { BASE_URL } from "./configs/constant";
 import { useCookies } from "react-cookie";
 
+export const baseURL: string = "http://localhost:4000/";
+
 const privateAxios = axios.create({
-  baseURL: BASE_URL,
+  baseURL: baseURL,
 });
 
 privateAxios.interceptors.response.use(
   (config) => {
-    const [cookies] = useCookies("token");
-    console.log(cookies);
-    config.headers["Authorization"] = `Bearer ${cookies.token}`;
+    console.log("sda");
+
+    const [cookies] = useCookies(["token"]);
+    // config.headers["Authorization"] = `Bearer ${cookies.token}`;
 
     console.log(config);
     return config;
@@ -19,3 +21,5 @@ privateAxios.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+export default privateAxios;

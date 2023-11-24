@@ -1,21 +1,19 @@
-import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { CookiesProvider, useCookies } from "react-cookie";
 import axios from "axios";
-import { useToasts } from "react-hot-toast";
-import toast from "react-hot-toast/headless";
+import { toast } from "react-hot-toast";
 
 interface FormData {
   username: string;
-  password: number;
+  password: string;
 }
 
 export default function LoginPage() {
   const { register, handleSubmit, formState } = useForm<FormData>();
-
   const { errors } = formState;
   const navigate = useNavigate();
+  const [cookies, setCookie] = useCookies(["token"]);
 
   function onError(errors: any) {
     console.log(errors.message);
@@ -25,32 +23,38 @@ export default function LoginPage() {
     axios
       .post("http://localhost:4000/login", data)
       .then(function (response) {
-        console.log(response);
         const { token } = response.data;
-        console.log(token);
-        navigate("/dashboard");
+        const { role } = response.data.user;
+        console.log(role);
+        if (role === "admin") {
+          setCookie("token", token);
+          navigate("/dashboard");
+          toast.success(`You are authorized as an ${role} 😀 `);
+        } else {
+          toast.success(`You are ${role}`);
+          navigate("/client");
+        }
       })
       .catch(function () {
         console.log(data);
-
-        toast.error("you are not authorized.");
+        toast.error("You are not authorized.");
       });
   }
 
   return (
     <div className="flex flex-col justify-center md:flex-row">
       <div className="w-53 flex flex-col items-center justify-center">
-        <p className="text-blue-500">Shatel CRUD app</p>
+        <p className="text-blue-500 mb-10">Login to Shatel CRUD app</p>
         <div className="md:w-101">
-          <div className="flex flex-col justify-center shadow-md rounded-lg p-5">
+          <div className="flex flex-col gap-5 justify-center shadow-lg border rounded-lg p-5">
             <CookiesProvider>
-              <p>Log In To Admin Panel</p>
               <p>Enter your Authorized Username and Password.</p>
               <form
                 onSubmit={handleSubmit(onSubmit, onError)}
-                className=" mt-6 flex flex-col gap-3"
+                className=" mt-10 flex flex-col gap-6"
               >
                 <input
+                  className="border p-2 shadow rounded "
                   {...register("username", {
                     required: "This field is required",
                     minLength: {
@@ -69,6 +73,7 @@ export default function LoginPage() {
                 )}
 
                 <input
+                  className="border p-2 shadow rounded "
                   {...register("password", {
                     required: "This field is required",
                   })}

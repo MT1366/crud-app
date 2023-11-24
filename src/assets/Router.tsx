@@ -6,20 +6,20 @@ import ProtectedRoute from "../features/ProtectedRoute";
 
 const router = createBrowserRouter([
   {
-    path: "/loginpage",
+    path: "/",
     element: <LoginPage />,
   },
 
   {
     path: "/dashboard",
     element: (
-      <AdminPanel />
+      // <AdminPanel />
 
-      //   <CookiesProvider>
-      //     <ProtectedRoute>
-      //       <AdminPanel />
-      //     </ProtectedRoute>
-      //   </CookiesProvider>
+      <CookiesProvider>
+        <ProtectedRoute>
+          <AdminPanel />
+        </ProtectedRoute>
+      </CookiesProvider>
     ),
   },
 ]);
