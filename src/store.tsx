@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import bookReducer from "./features/slicers/bookSlicer";
+import authorReducer from "./features/slicers/authorSlicer";
 
 const store = configureStore({
   reducer: {
     books: bookReducer,
+    author: authorReducer,
   },
 });
 

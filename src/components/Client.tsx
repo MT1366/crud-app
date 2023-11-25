@@ -3,20 +3,16 @@ import { useEffect } from "react";
 import { RootState, AppDispatch } from "../store";
 import { fetchBooks } from "../features/slicers/bookSlicer";
 import { fetchAuthor } from "../features/slicers/authorSlicer";
-import { filterBook } from "../features/slicers/bookSlicer";
 
 import RightBar from "./RightBar";
-import Modal from "./Modal";
 import { HiMiniMagnifyingGlass } from "react-icons/hi2";
 
-export default function AdminPanel({ role }) {
+export default function ClientPanel() {
   const books = useSelector((state: RootState) => state.books.books);
   const author = useSelector((state: RootState) => state.author.author);
   const loading = useSelector((state: RootState) => state.books.isLoading);
 
   const dispatch = useDispatch<AppDispatch>();
-
-  console.log(books);
 
   useEffect(() => {
     dispatch(fetchBooks());
@@ -29,17 +25,10 @@ export default function AdminPanel({ role }) {
   return (
     <main className="bg-bgdark text-white flex flex-col h-100">
       <div className=" flex flex-row items-center gap-8 p-5 m-4 bg-bgsoft shadow text-white rounded-md">
-        <h1>Admin Panel</h1>
+        <h1>Client Panel</h1>
         <div className="flex items-center gap-2 bg-transparent outline-none">
           <HiMiniMagnifyingGlass />
-          <input
-            type="text"
-            onChange={(e) => dispatch(filterBook(e.target.value))}
-            placeholder="Search Your Book..."
-            className="rounded-md p-1 bg-transparent outline-none"
-          />
         </div>
-        <Modal />
       </div>
       <div className="flex flex-row items-center">
         <div className="flex flex-1 bg-bgsoft p-5 ml-4 text-white rounded-md h-full">
@@ -77,10 +66,16 @@ export default function AdminPanel({ role }) {
                         <td className="p-2">{userId ? userId : "none"}</td>
                         <td className="p-2">{authorsName}</td>
                         <td className="">
-                          <button className="rounded-sm pl-2 pr-2 bg-yellow-500">
+                          <button
+                            disabled
+                            className="rounded-sm pl-2 pr-2 bg-yellow-500"
+                          >
                             Edit
                           </button>
-                          <button className=" bg-red-500 rounded-sm pl-2 pr-2">
+                          <button
+                            disabled
+                            className=" bg-red-500 rounded-sm pl-2 pr-2"
+                          >
                             Delete
                           </button>
                         </td>

@@ -1,8 +1,14 @@
+import axios from "axios";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { CookiesProvider, useCookies } from "react-cookie";
-import axios from "axios";
+import { useDispatch } from "react-redux";
 import { toast } from "react-hot-toast";
+
+import logo from "../assets/images/default-news-image.webp";
+
+// import { login } from "../features/slicers/submitForm";
+// import privateAxios from "../../services/privateAxios";
 
 interface FormData {
   username: string;
@@ -14,10 +20,15 @@ export default function LoginPage() {
   const { errors } = formState;
   const navigate = useNavigate();
   const [cookies, setCookie] = useCookies(["token"]);
+  const dispatch = useDispatch();
 
   function onError(errors: any) {
     console.log(errors.message);
   }
+
+  // function onSubmit(data: FormData) {
+  //   dispatch(login(data.username, data.password));
+  // }
 
   function onSubmit(data: FormData) {
     axios
@@ -25,14 +36,13 @@ export default function LoginPage() {
       .then(function (response) {
         const { token } = response.data;
         const { role } = response.data.user;
-        console.log(role);
         if (role === "admin") {
           setCookie("token", token);
           navigate("/dashboard");
-          toast.success(`You are authorized as an ${role} 😀 `);
+          toast.success(`You are authorized as an ${role} 😎 `);
         } else {
-          toast.success(`You are ${role}`);
           navigate("/client");
+          toast.success(`You're authorized as a ${role} 🎉`);
         }
       })
       .catch(function () {
@@ -44,9 +54,12 @@ export default function LoginPage() {
   return (
     <div className="flex flex-col justify-center md:flex-row">
       <div className="w-53 flex flex-col items-center justify-center">
-        <p className="text-blue-500 mb-10">Login to Shatel CRUD app</p>
+        <div className="flex flex-col items-center">
+          <img src={logo} width={100} height={100} alt="LOGO" />
+          <p className="text-blue-500 mb-10">Login to Shatel CRUD app</p>
+        </div>
         <div className="md:w-101">
-          <div className="flex flex-col gap-5 justify-center shadow-lg border rounded-lg p-5">
+          <div className="flex flex-col justify-center shadow-lg border rounded-lg p-5">
             <CookiesProvider>
               <p>Enter your Authorized Username and Password.</p>
               <form

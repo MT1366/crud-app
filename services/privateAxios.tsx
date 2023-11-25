@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useCookies } from "react-cookie";
+import { CookiesProvider, useCookies, Cookies, setCookies } from "react-cookie";
 
 export const baseURL: string = "http://localhost:4000/";
 
@@ -9,9 +9,8 @@ const privateAxios = axios.create({
 
 privateAxios.interceptors.response.use(
   (config) => {
-    console.log("sda");
-
     const [cookies] = useCookies(["token"]);
+    console.log(cookies);
     // config.headers["Authorization"] = `Bearer ${cookies.token}`;
 
     console.log(config);

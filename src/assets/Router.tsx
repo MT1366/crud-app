@@ -3,6 +3,7 @@ import { CookiesProvider } from "react-cookie";
 import LoginPage from "../components/LoginPage";
 import AdminPanel from "../components/AdminPanel";
 import ProtectedRoute from "../features/ProtectedRoute";
+import ClientPanel from "../components/Client";
 
 const router = createBrowserRouter([
   {
@@ -13,14 +14,16 @@ const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: (
-      // <AdminPanel />
-
       <CookiesProvider>
         <ProtectedRoute>
           <AdminPanel />
         </ProtectedRoute>
       </CookiesProvider>
     ),
+  },
+  {
+    path: "/client",
+    element: <ClientPanel />,
   },
 ]);
 export default router;
