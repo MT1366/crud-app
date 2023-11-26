@@ -1,5 +1,5 @@
 import axios from "axios";
-import { CookiesProvider, useCookies, Cookies, setCookies } from "react-cookie";
+import { Cookies } from "react-cookie";
 
 export const baseURL: string = "http://localhost:4000/";
 
@@ -7,13 +7,14 @@ const privateAxios = axios.create({
   baseURL: baseURL,
 });
 
-privateAxios.interceptors.response.use(
+privateAxios.interceptors.request.use(
   (config) => {
-    const [cookies] = useCookies(["token"]);
-    console.log(cookies);
-    // config.headers["Authorization"] = `Bearer ${cookies.token}`;
+    const cookies = new Cookies();
+    const token = cookies.get("access_token");
 
-    console.log(config);
+    if (token) {
+      config.headers["Authorization"] = `Bearer ${token}`;
+    }
     return config;
   },
   (error) => {

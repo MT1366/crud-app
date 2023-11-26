@@ -6,7 +6,7 @@ import { AppDispatch } from "../store";
 export default function Modal() {
   const dispatch = useDispatch<AppDispatch>();
 
-  function submitModal(book: any) {
+  function submitModal() {
     dispatch(postBook());
   }
 

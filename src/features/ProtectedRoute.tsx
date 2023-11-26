@@ -6,7 +6,7 @@ ProtectedRoute.propTypes = {
   children: PropTypes.node,
 };
 
-function ProtectedRoute({ children, ...rest }: ProtectedRoute) {
+function ProtectedRoute({ children, ...rest }: any) {
   const [cookies] = useCookies(["token"]);
   // const { accessToken } = useCookies();
   console.log(cookies);

@@ -1,12 +1,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
+import privateAxios from "../../../services/privateAxios";
+
+// import axios from "axios";
 // import axios, { AxiosError } from "axios";
 
 export const fetchAuthor = createAsyncThunk(
   "authors/fetchAuthors",
   async () => {
     try {
-      const response = await axios.get("http://localhost:4000/authors");
+      const response = await privateAxios.get("http://localhost:4000/authors");
       const author = response.data;
       return author;
     } catch (error: any) {

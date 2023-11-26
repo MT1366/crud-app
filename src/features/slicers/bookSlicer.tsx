@@ -1,16 +1,15 @@
-// import privateAxios from "../../../services/privateAxios";
-import axios from "axios";
+import privateAxios from "../../../services/privateAxios";
 
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 export const fetchBooks = createAsyncThunk("books/fetchBooks", async () => {
   try {
-    const response = await axios.get("http://localhost:4000/posts");
+    const response = await privateAxios.get("http://localhost:4000/posts");
     const book = response.data;
     return book;
-  } catch (error: any) {
+  } catch (error) {
     // console.log(thunkAPI.rejectWithValue(error.response.data));
-    console.log(error.message);
+    console.log(error);
   }
 });
 
@@ -18,14 +17,18 @@ export const postBook = createAsyncThunk(
   "books/postBook",
   async (book, thunkAPI) => {
     try {
-      const response = await axios.post("http://localhost:4000/posts", book, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await privateAxios.post(
+        "http://localhost:4000/posts",
+        book,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       return response.data;
-    } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.response.data);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
     }
   }
 );
@@ -57,13 +60,6 @@ const bookSlicer = createSlice({
     getBooks(state, action) {
       state.books = action.payload;
     },
-    filterBook(state, action) {
-      state.books = state.books.filter((book) =>
-        book.title
-          .toLowerCase()
-          .includes(action.payload ? action.payload.toLowerCase() : "")
-      );
-    },
   },
 
   extraReducers: (builder) => {
@@ -80,11 +76,12 @@ const bookSlicer = createSlice({
         state.isLoading = false;
       })
       .addCase(postBook.pending, (state) => {
+        console.log(state);
         state.isLoading = true;
       })
       .addCase(postBook.fulfilled, (state, action) => {
-        console.log(state, action);
-        state.books.push(action.payload);
+        state.books = [...state.books, action.payload];
+        console.log(state.books, action);
       })
       .addCase(postBook.rejected, (state) => {
         state.isRejected = true;
@@ -92,6 +89,6 @@ const bookSlicer = createSlice({
   },
 });
 
-export const { getBooks, filterBook } = bookSlicer.actions;
+export const { getBooks } = bookSlicer.actions;
 
 export default bookSlicer.reducer;

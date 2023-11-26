@@ -1,18 +1,15 @@
-import axios from "axios";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { CookiesProvider, useCookies } from "react-cookie";
-import { useDispatch } from "react-redux";
 import { toast } from "react-hot-toast";
-
 import logo from "../assets/images/default-news-image.webp";
-
-// import { login } from "../features/slicers/submitForm";
-// import privateAxios from "../../services/privateAxios";
-
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
+import privateAxios from "../../services/privateAxios";
 interface FormData {
   username: string;
   password: string;
+  token: string;
 }
 
 export default function LoginPage() {
@@ -20,20 +17,18 @@ export default function LoginPage() {
   const { errors } = formState;
   const navigate = useNavigate();
   const [cookies, setCookie] = useCookies(["token"]);
-  const dispatch = useDispatch();
+  const token = useSelector((state: RootState) => state.auth.token);
+  console.log(token);
 
-  function onError(errors: any) {
-    console.log(errors.message);
+  function onError() {
+    console.log(errors);
   }
 
-  // function onSubmit(data: FormData) {
-  //   dispatch(login(data.username, data.password));
-  // }
-
   function onSubmit(data: FormData) {
-    axios
+    privateAxios
       .post("http://localhost:4000/login", data)
       .then(function (response) {
+        console.log(response);
         const { token } = response.data;
         const { role } = response.data.user;
         if (role === "admin") {
@@ -60,11 +55,11 @@ export default function LoginPage() {
         </div>
         <div className="md:w-101">
           <div className="flex flex-col justify-center shadow-lg border rounded-lg p-5">
-            <CookiesProvider>
+            <CookiesProvider cookies={cookies}>
               <p>Enter your Authorized Username and Password.</p>
               <form
                 onSubmit={handleSubmit(onSubmit, onError)}
-                className=" mt-10 flex flex-col gap-6"
+                className="mt-10 flex flex-col gap-6"
               >
                 <input
                   className="border p-2 shadow rounded "
@@ -80,7 +75,7 @@ export default function LoginPage() {
                   placeholder="Username"
                 />
                 {errors?.username && (
-                  <p className="text-red-900 text-xs font-light relative animate-bounce">
+                  <p className="text-red-600 text-xs font-bold relative animate-bounce">
                     {errors.username.message}
                   </p>
                 )}
@@ -95,7 +90,7 @@ export default function LoginPage() {
                   placeholder="Password"
                 />
                 {errors?.password && (
-                  <p className="text-red-900 text-xs font-light absoulute animate-bounce">
+                  <p className="text-red-600 text-xs font-bold absoulute animate-bounce">
                     {errors.password.message}
                   </p>
                 )}
