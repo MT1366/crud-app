@@ -8,7 +8,6 @@ export const fetchBooks = createAsyncThunk("books/fetchBooks", async () => {
     const book = response.data;
     return book;
   } catch (error) {
-    // console.log(thunkAPI.rejectWithValue(error.response.data));
     console.log(error);
   }
 });
@@ -19,6 +18,39 @@ export const postBook = createAsyncThunk(
     try {
       const response = await privateAxios.post(
         "http://localhost:4000/posts",
+        book,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+export const deleteBook = createAsyncThunk("books/deleteBook", async (id) => {
+  try {
+    const response = await privateAxios.delete(
+      `http://localhost:4000/posts?id=${id}`
+    );
+    const bookId = response;
+    console.log(bookId);
+    return bookId;
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+export const editBook = createAsyncThunk(
+  "books/editBook",
+  async (book, thunkAPI) => {
+    try {
+      const response = await privateAxios.put(
+        `http://localhost:4000/posts?_post=${book}`,
         book,
         {
           headers: {
@@ -82,8 +114,38 @@ const bookSlicer = createSlice({
       .addCase(postBook.fulfilled, (state, action) => {
         state.books = [...state.books, action.payload];
         console.log(state.books, action);
+        state.isLoading = false;
       })
       .addCase(postBook.rejected, (state) => {
+        state.isRejected = true;
+      })
+      .addCase(deleteBook.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteBook.fulfilled, (state, action) => {
+        const deletedBookId = action.payload?.data;
+        if (deletedBookId !== undefined) {
+          state.books = state.books.filter((book) => book.id !== deletedBookId);
+        }
+        state.isLoading = false;
+      })
+      .addCase(deleteBook.rejected, (state) => {
+        state.isRejected = true;
+        state.isLoading = false;
+      })
+      .addCase(editBook.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(editBook.fulfilled, (state, action) => {
+        const bookIndex = state.books.findIndex(
+          (book) => book.id === action.payload.id
+        );
+        if (bookIndex !== -1) {
+          state.books[bookIndex] = action.payload;
+        }
+        state.isLoading = false;
+      })
+      .addCase(editBook.rejected, (state) => {
         state.isRejected = true;
       });
   },
