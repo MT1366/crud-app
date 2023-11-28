@@ -7,6 +7,7 @@ import {
   editBook,
   fetchBooks,
 } from "../features/slicers/bookSlicer";
+import timeDifference from "../features/costumeHook/timeDiffrence";
 
 import {
   HiInboxStack,
@@ -22,18 +23,28 @@ export default function AdminPanel() {
   const books = useSelector((state: RootState) => state.books.books);
   const author = useSelector((state: RootState) => state.author.author);
   const loading = useSelector((state: RootState) => state.books.isLoading);
-  console.log(books);
+  const [editingBook, setEditingBook] = useState<Book | null>(null);
 
   const dispatch = useDispatch<AppDispatch>();
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     dispatch(fetchBooks());
-  }, [dispatch]);
-
-  useEffect(() => {
     dispatch(fetchAuthor());
   }, [dispatch]);
+
+  const handleEditClick = (book: Book) => {
+    setEditingBook(book);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingBook(null);
+  };
+
+  const handleSaveEdit = (editedBook: Book) => {
+    dispatch(editBook(editedBook));
+    setEditingBook(null);
+  };
 
   return (
     <main className="bg-bgdark text-white flex flex-col h-100 w-full">
@@ -51,7 +62,7 @@ export default function AdminPanel() {
         </div>
         <div>ICONS</div>
       </div>
-      <div className="flex flex-row flex-1 items-center ">
+      <div className="flex flex-row flex-1 items-center h-full ">
         <div className="w-40 flex flex-col bg-bgsoft p-5 ml-4 text-white rounded-md h-full gap-10">
           <p>User</p>
           <div className="flex gap-4 p-2 items-center hover:bg-bgdark rounded-lg cursor-pointer">
@@ -72,16 +83,16 @@ export default function AdminPanel() {
             <h1>Transactions</h1>
           </div>
         </div>
-        <div className="h-80 ml-2 relative flex-4">
+        <div className="h-full ml-5 flex-4">
           {loading ? (
             <div className="relative left-2/4 top-2/4 animate-bounce w-54 flex flex-4 h-5 mr-3 text-lg ">
               <p>LOADING...</p>
             </div>
           ) : (
             <div className="w-full">
-              <table className="bg-bgsoft flex-4 h-full p-5 rounded-md text-sm">
-                <thead className="text-left w-full">
-                  <tr className="border-b w-full">
+              <table className="bg-bgsoft rounded-md text-sm h-full">
+                <thead className="text-left">
+                  <tr className="border-b">
                     <td className="p-2">ID</td>
                     <td className="p-2">Title</td>
                     <td className="p-2">Content</td>
@@ -103,32 +114,124 @@ export default function AdminPanel() {
                     .map(({ id, title, content, date, userId }) => {
                       const authorsName =
                         author.find((a) => a.id === userId)?.name || "none";
+                      const timeAgo = timeDifference(date);
                       return (
-                        <>
-                          <tr className="pt-2" key={id}>
-                            <td className="p-2">{id}</td>
-                            <td className="p-2">{title}</td>
-                            <td className="p-2">{content}</td>
-                            <td className="p-2">{date}</td>
-                            <td className="p-2">{userId ? userId : "none"}</td>
-                            <td className="p-2">{authorsName}</td>
-                            <td className="">
+                        <tr className="pt-1" key={id}>
+                          <td className="p-2">{id}</td>
+                          <td className="p-2">
+                            {editingBook && editingBook.id === id ? (
+                              <input
+                                className="text-black"
+                                type="text"
+                                value={editingBook.title}
+                                onChange={(e) =>
+                                  setEditingBook({
+                                    ...editingBook,
+                                    title: e.target.value,
+                                  })
+                                }
+                              />
+                            ) : (
+                              title
+                            )}
+                          </td>{" "}
+                          <td className="p-2">
+                            {editingBook && editingBook.id === id ? (
+                              <input
+                                className="text-black"
+                                type="text"
+                                value={editingBook.content}
+                                onChange={(e) =>
+                                  setEditingBook({
+                                    ...editingBook,
+                                    content: e.target.value,
+                                  })
+                                }
+                              />
+                            ) : (
+                              content
+                            )}
+                          </td>
+                          <td className="p-2">
+                            {editingBook && editingBook.id === id ? (
+                              <input
+                                className="text-black"
+                                type="date"
+                                value={editingBook.date}
+                                onChange={(e) =>
+                                  setEditingBook({
+                                    ...editingBook,
+                                    date: e.target.value,
+                                  })
+                                }
+                              />
+                            ) : (
+                              timeAgo
+                            )}
+                          </td>{" "}
+                          <td className="p-2">
+                            {editingBook && editingBook.id === id ? (
+                              <input
+                                className="text-black"
+                                type="text"
+                                value={editingBook.userid}
+                                onChange={(e) =>
+                                  setEditingBook({
+                                    ...editingBook,
+                                    userId: e.target.value,
+                                  })
+                                }
+                              />
+                            ) : (
+                              userId
+                            )}
+                          </td>{" "}
+                          <td className="p-2">{authorsName}</td>
+                          <td className="flex items-center p-5 gap-2">
+                            {editingBook && editingBook.id === id ? (
+                              <>
+                                <button
+                                  className="rounded-md p-2 bg-green-500"
+                                  onClick={() => handleSaveEdit(editingBook)}
+                                >
+                                  Save
+                                </button>
+                                <button
+                                  className="rounded-md p-2 bg-red-500"
+                                  onClick={handleCancelEdit}
+                                >
+                                  Cancel
+                                </button>
+                              </>
+                            ) : (
                               <button
-                                className="rounded-sm pl-2 pr-2 
-                              bg-yellow-500 "
-                                onClick={() => dispatch(editBook(book))}
+                                className="rounded-md p-2 bg-yellow-500"
+                                onClick={() =>
+                                  handleEditClick({
+                                    id,
+                                    title,
+                                    content,
+                                    date,
+                                    userId,
+                                  })
+                                }
                               >
                                 Edit
                               </button>
+                            )}
+
+                            {editingBook && editingBook.id === id ? (
+                              ""
+                            ) : (
                               <button
-                                className=" bg-red-500 rounded-sm pl-2 pr-2"
+                                className="rounded-md p-2 bg-red-500"
                                 onClick={() => dispatch(deleteBook(id))}
                               >
                                 Delete
                               </button>
-                            </td>
-                          </tr>
-                        </>
+                            )}
+                          </td>
+                        </tr>
                       );
                     })}
                 </tbody>
