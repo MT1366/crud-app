@@ -15,8 +15,8 @@ import {
   HiMiniShoppingBag,
   HiMiniSquare3Stack3D,
 } from "react-icons/hi2";
-
 import RightBar from "./RightBar";
+
 import { HiMiniMagnifyingGlass } from "react-icons/hi2";
 
 export default function AdminPanel() {
@@ -47,8 +47,8 @@ export default function AdminPanel() {
   };
 
   return (
-    <main className="bg-bgdark text-white flex flex-col h-100 w-full">
-      <div className=" flex flex-row items-center justify-between gap-8 p-5 m-4 bg-bgsoft shadow text-white rounded-md">
+    <main className="bg-bgdark text-white flex flex-col">
+      <div className=" flex flex-row items-center justify-between p-5 m-2 bg-bgsoft shadow text-white rounded-md">
         <h1>Admin Panel</h1>
         <div className="flex items-center gap-2 bg-transparent outline-none">
           <HiMiniMagnifyingGlass />
@@ -62,8 +62,8 @@ export default function AdminPanel() {
         </div>
         <div>ICONS</div>
       </div>
-      <div className="flex flex-row flex-1 items-center h-full ">
-        <div className="w-40 flex flex-col bg-bgsoft p-5 ml-4 text-white rounded-md h-full gap-10">
+      <section className="bg-bgdark flex flex-row gap-1 m-1 p-1">
+        <div className=" flex-none w-64 flex flex-col bg-bgsoft p-5 text-white rounded-md gap-10 h-f ">
           <p>User</p>
           <div className="flex gap-4 p-2 items-center hover:bg-bgdark rounded-lg cursor-pointer">
             <HiInboxStack />
@@ -83,164 +83,167 @@ export default function AdminPanel() {
             <h1>Transactions</h1>
           </div>
         </div>
-        <div className="h-full ml-5 flex-4">
-          {loading ? (
-            <div className="relative left-2/4 top-2/4 animate-bounce w-54 flex flex-4 h-5 mr-3 text-lg ">
-              <p>LOADING...</p>
-            </div>
-          ) : (
-            <div className="w-full">
-              <table className="bg-bgsoft rounded-md text-sm h-full">
-                <thead className="text-left">
-                  <tr className="border-b">
-                    <td className="p-2">ID</td>
-                    <td className="p-2">Title</td>
-                    <td className="p-2">Content</td>
-                    <td className="p-2">Date</td>
-                    <td className="p-2">User-Id</td>
-                    <td className="p-2">Author</td>
-                  </tr>
-                </thead>
-
-                <tbody className=" bg-bgsoft text-white text-left rounded-md h-75 ">
-                  {books
-                    .filter(
-                      (book) =>
-                        book.title &&
-                        book.title
-                          .toLowerCase()
-                          .includes(searchTerm.toLowerCase())
-                    )
-                    .map(({ id, title, content, date, userId }) => {
-                      const authorsName =
-                        author.find((a) => a.id === userId)?.name || "none";
-                      const timeAgo = timeDifference(date);
-                      return (
-                        <tr className="pt-1" key={id}>
-                          <td className="p-2">{id}</td>
-                          <td className="p-2">
-                            {editingBook && editingBook.id === id ? (
-                              <input
-                                className="text-black"
-                                type="text"
-                                value={editingBook.title}
-                                onChange={(e) =>
-                                  setEditingBook({
-                                    ...editingBook,
-                                    title: e.target.value,
-                                  })
-                                }
-                              />
-                            ) : (
-                              title
-                            )}
-                          </td>{" "}
-                          <td className="p-2">
-                            {editingBook && editingBook.id === id ? (
-                              <input
-                                className="text-black"
-                                type="text"
-                                value={editingBook.content}
-                                onChange={(e) =>
-                                  setEditingBook({
-                                    ...editingBook,
-                                    content: e.target.value,
-                                  })
-                                }
-                              />
-                            ) : (
-                              content
-                            )}
-                          </td>
-                          <td className="p-2">
-                            {editingBook && editingBook.id === id ? (
-                              <input
-                                className="text-black"
-                                type="date"
-                                value={editingBook.date}
-                                onChange={(e) =>
-                                  setEditingBook({
-                                    ...editingBook,
-                                    date: e.target.value,
-                                  })
-                                }
-                              />
-                            ) : (
-                              timeAgo
-                            )}
-                          </td>{" "}
-                          <td className="p-2">
-                            {editingBook && editingBook.id === id ? (
-                              <input
-                                className="text-black"
-                                type="text"
-                                value={editingBook.userid}
-                                onChange={(e) =>
-                                  setEditingBook({
-                                    ...editingBook,
-                                    userId: e.target.value,
-                                  })
-                                }
-                              />
-                            ) : (
-                              userId
-                            )}
-                          </td>{" "}
-                          <td className="p-2">{authorsName}</td>
-                          <td className="flex items-center p-5 gap-2">
-                            {editingBook && editingBook.id === id ? (
-                              <>
+        <div className="flex flex-1 h-fit">
+          <div className="h-full ml-1 flex-4">
+            {loading ? (
+              <div className="relative left-2/4 top-2/4 animate-bounce w-54 flex flex-4 h-5 mr-3 text-lg ">
+                <p>LOADING...</p>
+              </div>
+            ) : (
+              <div className="w-full">
+                <table className="bg-bgsoft rounded-md text-sm w-full">
+                  <thead className="text-left bg-bgdark">
+                    <tr className="border-b">
+                      <td className="p-2">ID</td>
+                      <td className="p-2">Title</td>
+                      <td className="p-2">Content</td>
+                      <td className="p-2">Date</td>
+                      <td className="p-2">User-Id</td>
+                      <td className="p-2">Author</td>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-bgsoft text-white text-left rounded-md">
+                    {books
+                      .filter(
+                        (book) =>
+                          book.title &&
+                          book.title
+                            .toLowerCase()
+                            .includes(searchTerm.toLowerCase())
+                      )
+                      .map(({ id, title, content, date, userId }) => {
+                        const authorsName =
+                          author.find((a) => a.id === userId)?.name || "none";
+                        const timeAgo = timeDifference(date);
+                        return (
+                          <tr className="pt-1" key={id}>
+                            <td className="p-2">{id}</td>
+                            <td className="p-2">
+                              {editingBook && editingBook.id === id ? (
+                                <input
+                                  className="text-black w-10"
+                                  type="text"
+                                  value={editingBook.title}
+                                  onChange={(e) =>
+                                    setEditingBook({
+                                      ...editingBook,
+                                      title: e.target.value,
+                                    })
+                                  }
+                                />
+                              ) : (
+                                title
+                              )}
+                            </td>{" "}
+                            <td className="p-2">
+                              {editingBook && editingBook.id === id ? (
+                                <input
+                                  className="text-black w-10"
+                                  type="text"
+                                  value={editingBook.content}
+                                  onChange={(e) =>
+                                    setEditingBook({
+                                      ...editingBook,
+                                      content: e.target.value,
+                                    })
+                                  }
+                                />
+                              ) : (
+                                content
+                              )}
+                            </td>
+                            <td className="p-2">
+                              {editingBook && editingBook.id === id ? (
+                                <input
+                                  className="text-black w-10"
+                                  type="date"
+                                  value={editingBook.date}
+                                  onChange={(e) =>
+                                    setEditingBook({
+                                      ...editingBook,
+                                      date: e.target.value,
+                                    })
+                                  }
+                                />
+                              ) : (
+                                timeAgo
+                              )}
+                            </td>{" "}
+                            <td className="p-2">
+                              {editingBook && editingBook.id === id ? (
+                                <input
+                                  className="text-black w-10"
+                                  type="text"
+                                  value={editingBook.userid}
+                                  onChange={(e) =>
+                                    setEditingBook({
+                                      ...editingBook,
+                                      userId: e.target.value,
+                                    })
+                                  }
+                                />
+                              ) : (
+                                userId
+                              )}
+                            </td>{" "}
+                            <td className="p-2">{authorsName}</td>
+                            <td className="flex items-center p-5 gap-2">
+                              {editingBook && editingBook.id === id ? (
+                                <>
+                                  <button
+                                    className="rounded-md p-2 bg-green-500"
+                                    onClick={() => handleSaveEdit(editingBook)}
+                                  >
+                                    Save
+                                  </button>
+                                  <button
+                                    className="rounded-md p-2 bg-red-500"
+                                    onClick={handleCancelEdit}
+                                  >
+                                    Cancel
+                                  </button>
+                                </>
+                              ) : (
                                 <button
-                                  className="rounded-md p-2 bg-green-500"
-                                  onClick={() => handleSaveEdit(editingBook)}
+                                  className="rounded-md p-2 bg-yellow-500"
+                                  onClick={() =>
+                                    handleEditClick({
+                                      id,
+                                      title,
+                                      content,
+                                      date,
+                                      userId,
+                                    })
+                                  }
                                 >
-                                  Save
+                                  Edit
                                 </button>
+                              )}
+
+                              {editingBook && editingBook.id === id ? (
+                                ""
+                              ) : (
                                 <button
                                   className="rounded-md p-2 bg-red-500"
-                                  onClick={handleCancelEdit}
+                                  onClick={() => dispatch(deleteBook(id))}
                                 >
-                                  Cancel
+                                  Delete
                                 </button>
-                              </>
-                            ) : (
-                              <button
-                                className="rounded-md p-2 bg-yellow-500"
-                                onClick={() =>
-                                  handleEditClick({
-                                    id,
-                                    title,
-                                    content,
-                                    date,
-                                    userId,
-                                  })
-                                }
-                              >
-                                Edit
-                              </button>
-                            )}
-
-                            {editingBook && editingBook.id === id ? (
-                              ""
-                            ) : (
-                              <button
-                                className="rounded-md p-2 bg-red-500"
-                                onClick={() => dispatch(deleteBook(id))}
-                              >
-                                Delete
-                              </button>
-                            )}
-                          </td>
-                        </tr>
-                      );
-                    })}
-                </tbody>
-              </table>
-            </div>
-          )}
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
         </div>
-        <RightBar />
-      </div>
+        <div className="flex flex-row flex-64 items-center ">
+          <RightBar />
+        </div>
+      </section>
     </main>
   );
 }

@@ -1,6 +1,7 @@
-import privateAxios from "../../../services/privateAxios";
+import privateAxios from "../services/privateAxios";
 
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import toast from "react-hot-toast";
 
 export const fetchBooks = createAsyncThunk("books/fetchBooks", async () => {
   try {
@@ -25,6 +26,7 @@ export const postBook = createAsyncThunk(
           },
         }
       );
+      toast.success(`You added a new book 📗`);
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
@@ -38,7 +40,8 @@ export const deleteBook = createAsyncThunk("books/deleteBook", async (id) => {
       `http://localhost:4000/posts?id=${id}`
     );
     const bookId = response;
-    console.log(bookId);
+    toast.success(`You deleted a book 📕`);
+
     return bookId;
   } catch (error) {
     console.log(error);
@@ -58,6 +61,8 @@ export const editBook = createAsyncThunk(
           },
         }
       );
+      toast.success(`You have edited a book 📚`);
+
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error);

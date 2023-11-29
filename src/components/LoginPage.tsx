@@ -5,7 +5,7 @@ import { toast } from "react-hot-toast";
 import logo from "../assets/images/default-news-image.webp";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
-import privateAxios from "../../services/privateAxios";
+import privateAxios from "../features/services/privateAxios";
 
 interface FormData {
   username: string;

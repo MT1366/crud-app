@@ -1,8 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import privateAxios from "../../../services/privateAxios";
-
-// import axios from "axios";
-// import axios, { AxiosError } from "axios";
+import privateAxios from "../services/privateAxios";
 
 export const fetchAuthor = createAsyncThunk(
   "authors/fetchAuthors",
