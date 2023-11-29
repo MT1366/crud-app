@@ -3,14 +3,15 @@ import { useEffect } from "react";
 import { RootState, AppDispatch } from "../store";
 import { fetchBooks } from "../features/slicers/bookSlicer";
 import { fetchAuthor } from "../features/slicers/authorSlicer";
+import { useState } from "react";
 
-import RightBar from "./RightBar";
 import { HiMiniMagnifyingGlass } from "react-icons/hi2";
 
 export default function ClientPanel() {
   const books = useSelector((state: RootState) => state.books.books);
   const author = useSelector((state: RootState) => state.author.author);
   const loading = useSelector((state: RootState) => state.books.isLoading);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -28,10 +29,17 @@ export default function ClientPanel() {
         <h1>Client Panel</h1>
         <div className="flex items-center gap-2 bg-transparent outline-none">
           <HiMiniMagnifyingGlass />
+          <input
+            type="text"
+            placeholder="Search Your Book..."
+            className="rounded-md p-1 bg-transparent outline-none"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
         </div>
       </div>
       <div className="flex flex-row items-center">
-        <div className="flex flex-1 bg-bgsoft p-5 ml-4 text-white rounded-md h-full">
+        <div className="flex flex-none w-64 bg-bgsoft p-5 ml-4 text-white rounded-md h-full">
           <h1>DASHBOARD</h1>
         </div>
         <div className="h-80 ml-2 relative flex-4">
@@ -53,41 +61,48 @@ export default function ClientPanel() {
               </thead>
 
               <tbody className=" bg-bgsoft text-white text-left rounded-md h-75 ">
-                {books.map(({ id, title, content, date, userId }) => {
-                  const authorsName =
-                    author.find((a) => a.id === userId)?.name || "none";
-                  return (
-                    <>
-                      <tr className="pt-2" key={id}>
-                        <td className="p-2">{id}</td>
-                        <td className="p-2">{title}</td>
-                        <td className="p-2">{content}</td>
-                        <td className="p-2">{date}</td>
-                        <td className="p-2">{userId ? userId : "none"}</td>
-                        <td className="p-2">{authorsName}</td>
-                        <td className="">
-                          <button
-                            disabled
-                            className="rounded-sm pl-2 pr-2 bg-yellow-500"
-                          >
-                            Edit
-                          </button>
-                          <button
-                            disabled
-                            className=" bg-red-500 rounded-sm pl-2 pr-2"
-                          >
-                            Delete
-                          </button>
-                        </td>
-                      </tr>
-                    </>
-                  );
-                })}
+                {books
+                  .filter(
+                    (book) =>
+                      book.title &&
+                      book.title
+                        .toLowerCase()
+                        .includes(searchTerm.toLowerCase())
+                  )
+                  .map(({ id, title, content, date, userId }) => {
+                    const authorsName =
+                      author.find((a) => a.id === userId)?.name || "none";
+                    return (
+                      <>
+                        <tr className="pt-2" key={id}>
+                          <td className="p-2">{id}</td>
+                          <td className="p-2">{title}</td>
+                          <td className="p-2">{content}</td>
+                          <td className="p-2">{date}</td>
+                          <td className="p-2">{userId ? userId : "none"}</td>
+                          <td className="p-2">{authorsName}</td>
+                          <td className="">
+                            <button
+                              disabled
+                              className="rounded-sm pl-2 pr-2 bg-yellow-500"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              disabled
+                              className=" bg-red-500 rounded-sm pl-2 pr-2"
+                            >
+                              Delete
+                            </button>
+                          </td>
+                        </tr>
+                      </>
+                    );
+                  })}
               </tbody>
             </table>
           )}
         </div>
-        <RightBar />
       </div>
     </main>
   );
