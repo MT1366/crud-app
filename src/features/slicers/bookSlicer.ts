@@ -28,12 +28,11 @@ export const fetchBooks = createAsyncThunk("books/fetchBooks", async () => {
 
 export const postBook = createAsyncThunk(
   "books/postBook",
-  async (book, thunkAPI) => {
-    console.log(book);
+  async (formData: FormData, thunkAPI) => {
     try {
       const response = await privateAxios.post(
         "http://localhost:4000/posts",
-        book,
+        formData,
         {
           headers: {
             "Content-Type": "application/json",

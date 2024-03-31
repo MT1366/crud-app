@@ -14,7 +14,7 @@ interface FormData {
   date: string;
   userId: string;
   author: string;
-  imageUrl: string;
+  imageUrl: File | null;
 }
 interface ModalProps {
   openModal: boolean;
@@ -34,23 +34,19 @@ export default function Modal({ openModal, setOpenModal }: ModalProps) {
   }, [dispatch]);
 
   function onSubmit(data: FormData) {
-    // Create a new FormData instance
     const formData = new FormData();
 
-    // Append all fields from the form data
-    for (const key in data) {
-      formData.append(key, data[key]);
+    for (const [key, value] of Object.entries(data)) {
+      if (typeof value === "string") {
+        formData.append(key, value);
+      }
     }
 
-    // Append the file from the file input
-    const fileInput = document.querySelector(
-      'input[type="file"]'
-    ) as HTMLInputElement;
-    if (fileInput.files.length > 0) {
+    const fileInput = fileInputRef.current;
+    if (fileInput && fileInput.files && fileInput.files.length > 0) {
       formData.append("imageUrl", fileInput.files[0]);
     }
-
-    // Dispatch the action with the FormData object
+    console.log(formData);
     dispatch(postBook(formData));
     setOpenModal(false);
   }
@@ -112,7 +108,6 @@ export default function Modal({ openModal, setOpenModal }: ModalProps) {
           placeholder="Image"
           name="imageUrl"
           className="bg-bgdark p-1 rounded-md outline-none text-white"
-          // onChange={handleFileChange}
           ref={fileInputRef}
         />
         {errors?.imageUrl && (
