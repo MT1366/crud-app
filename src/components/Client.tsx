@@ -24,7 +24,7 @@ export default function ClientPanel() {
   }, [dispatch]);
 
   return (
-    <main className="bg-bgdark text-white flex flex-col h-100">
+    <main className="bg-bgdark text-white flex flex-col">
       <div className=" flex flex-row items-center gap-8 p-5 m-4 bg-bgsoft shadow text-white rounded-md">
         <h1>Client Panel</h1>
         <div className="flex items-center gap-2 bg-transparent outline-none">
@@ -39,16 +39,16 @@ export default function ClientPanel() {
         </div>
       </div>
       <div className="flex flex-row items-center">
-        <div className="flex flex-none w-64 bg-bgsoft p-5 ml-4 text-white rounded-md h-full">
+        <div className="flex flex-none w-64 bg-bgsoft p-5 ml-4 text-white rounded-md">
           <h1>DASHBOARD</h1>
         </div>
-        <div className="h-80 ml-2 relative flex-4">
+        <div className=" ml-2 relative flex-4">
           {loading ? (
-            <div className="animate-bounce h-5 w-5 mr-3 text-lg absolute left-0 top-5">
+            <div className="animate-bounce mr-3 text-lg absolute left-0 top-5">
               LOADING...
             </div>
           ) : (
-            <table className="bg-bgsoft w-100 p-5 rounded-md text-sm">
+            <table className="bg-bgsoft p-5 rounded-md text-sm">
               <thead className="text-left">
                 <tr className="border-b">
                   <td className="p-2">ID</td>
@@ -60,7 +60,7 @@ export default function ClientPanel() {
                 </tr>
               </thead>
 
-              <tbody className=" bg-bgsoft text-white text-left rounded-md h-75 ">
+              <tbody className=" bg-bgsoft text-white text-left rounded-md">
                 {books
                   .filter(
                     (book) =>
@@ -90,7 +90,7 @@ export default function ClientPanel() {
                             </button>
                             <button
                               disabled
-                              className=" bg-red-500 rounded-sm pl-2 pr-2"
+                              className="bg-red-500 rounded-sm pl-2 pr-2"
                             >
                               Delete
                             </button>

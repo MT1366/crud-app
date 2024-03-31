@@ -1,8 +1,12 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import { postBook } from "../features/slicers/bookSlicer";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAuthor } from "../features/slicers/authorSlicer";
 import { RootState, AppDispatch } from "../store";
+import { useForm } from "react-hook-form";
+import TextInput from "./Inputs/TextInput";
+import DateInput from "./Inputs/DateInput";
+// import FileInput from "./Inputs/FileInput";
 
 interface FormData {
   title: string;
@@ -10,81 +14,124 @@ interface FormData {
   date: string;
   userId: string;
   author: string;
+  imageUrl: string;
+}
+interface ModalProps {
+  openModal: boolean;
+  setOpenModal: (open: boolean) => void; // Corrected type for setOpenModal
 }
 
-export default function Modal() {
+export default function Modal({ openModal, setOpenModal }: ModalProps) {
   const author = useSelector((state: RootState) => state.author.author);
   const dispatch = useDispatch<AppDispatch>();
-  const [formData, setFormData] = useState<FormData>({
-    title: "",
-    content: "",
-    date: "",
-    userId: "",
-    author: "",
-  });
+  const { register, handleSubmit, formState } = useForm<FormData>();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const { errors } = formState;
 
   useEffect(() => {
     dispatch(fetchAuthor());
   }, [dispatch]);
 
-  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const { name, value } = event.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
-  }
+  function onSubmit(data: FormData) {
+    // Create a new FormData instance
+    const formData = new FormData();
 
-  function handleSelectChange(event: React.ChangeEvent<HTMLSelectElement>) {
-    const { name, value } = event.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
-  }
+    // Append all fields from the form data
+    for (const key in data) {
+      formData.append(key, data[key]);
+    }
 
-  function submitModal(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+    // Append the file from the file input
+    const fileInput = document.querySelector(
+      'input[type="file"]'
+    ) as HTMLInputElement;
+    if (fileInput.files.length > 0) {
+      formData.append("imageUrl", fileInput.files[0]);
+    }
+
+    // Dispatch the action with the FormData object
     dispatch(postBook(formData));
+    setOpenModal(false);
   }
 
   return (
-    <div>
+    <div className="relative bg-gray-500 ">
       <form
-        onSubmit={submitModal}
-        className="flex flex-col rounded-md border relative left w-40 gap-5 justify-center m-8 p-5 text-black"
+        onSubmit={handleSubmit(onSubmit)}
+        className={`flex flex-col container absolute left-64 w-50 rounded-md border gap-5 justify-center m-10 p-12 text-black bg-white/30 backdrop-blur-md ${
+          openModal ? "animate-wiggle" : ""
+        }`}
       >
-        <h1 className="text-white">Add new book</h1>
-        <input
-          type="text"
-          placeholder="Title..."
+        <h1 className="text-white text-lg">Add new book</h1>
+        <TextInput
+          register={register}
           name="title"
-          value={formData.title}
-          onChange={handleChange}
-          className="bg-bgdark p-1 rounded-md outline-none text-white"
-        />
-        <input
+          placeholder="Title"
+          errors={errors}
           type="text"
-          placeholder="Content"
+        />
+        <TextInput
+          register={register}
           name="content"
-          value={formData.content}
-          onChange={handleChange}
-          className="bg-bgdark p-1 rounded-md outline-none text-white"
+          placeholder="Content"
+          errors={errors}
+          type="text"
         />
-        <input
-          type="date"
-          placeholder="Date"
+        <DateInput
+          register={register}
           name="date"
-          value={formData.date}
-          onChange={handleChange}
-          className="bg-bgdark p-1 rounded-md outline-none text-white"
+          placeholder="Date"
+          errors={errors}
         />
         <input
+          {...register("userId", {
+            required: "This field is required!",
+            min: {
+              value: 0,
+              message: "Value must be zero or higher",
+            },
+            max: {
+              value: 1,
+              message: "Value must be below one",
+            },
+          })}
           type="text"
           placeholder="User ID"
           name="userId"
-          value={formData.userId}
-          onChange={handleChange}
           className="bg-bgdark p-1 rounded-md outline-none text-white"
         />
+        {errors?.userId && (
+          <p className="text-red-400 text-xs font-bold relative animate-bounce">
+            {errors.userId.message}
+          </p>
+        )}
 
+        <input
+          type="file"
+          placeholder="Image"
+          name="imageUrl"
+          className="bg-bgdark p-1 rounded-md outline-none text-white"
+          // onChange={handleFileChange}
+          ref={fileInputRef}
+        />
+        {errors?.imageUrl && (
+          <p className="text-red-400 text-xs font-bold relative animate-bounce">
+            {errors.imageUrl.message}
+          </p>
+        )}
+        {/* <FileInput
+          placeholder="image"
+          name="imageUrl"
+          register={register}
+          errors={errors}
+        /> */}
         <select
+          {...register("author", {
+            required: "This field is required!",
+          })}
           name="author"
-          onChange={handleSelectChange}
+          id="author"
           className="bg-bgdark p-1 rounded-md outline-none text-white"
         >
           {author.map((auth) => (
@@ -93,6 +140,12 @@ export default function Modal() {
             </option>
           ))}
         </select>
+        {errors?.author && (
+          <p className="text-red-400 text-xs font-bold relative animate-bounce">
+            {errors.author.message}
+          </p>
+        )}
+
         <button
           type="submit"
           className="bg-green-500 text-white p-1 rounded-md "

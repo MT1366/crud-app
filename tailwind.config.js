@@ -1,8 +1,24 @@
-/** @type {import('tailwindcss').Config} */
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
+    container: {
+      center: true,
+    },
     extend: {
+      keyframes: {
+        wiggle: {
+          "0%": { transform: "translateY(-500px)" },
+          "100%": { transform: "translateY(0)" },
+        },
+        fade: {
+          "0%": { transform: "translateY(30px)", opacity: "0" },
+          "100%": { transform: "translateY(0)", opacity: "1" },
+        },
+      },
+      animation: {
+        wiggle: "wiggle 0.5s ease-in-out 1",
+        fade: "fade 0.5s ease-in-out 1",
+      },
       images: {
         "login-image": "url(src/assets/loginformimage.png)",
       },
@@ -16,10 +32,14 @@ export default {
         bgdark: "#151c2c",
         bgsoft: "#182237",
         soft: "#b7bac1",
+        orange: "#FF6B00",
+        dark: "#262626",
       },
       width: {
         10: "8vw",
         20: "10vw",
+        21: "13vw",
+        24: "14vw",
         30: "15vw",
         40: "20vw",
         41: "30vw",
@@ -32,6 +52,9 @@ export default {
         52: "60vw",
         53: "70vw",
         54: "75vw",
+        90: "90vw",
+        95: "95vw",
+        100: "100vw",
         101: "45rem",
       },
       height: {
@@ -52,7 +75,16 @@ export default {
         99: "95vh",
         100: "100vh",
         129: "800px",
+        621: "6021px",
+        836: "836px",
       },
+      top: {
+        150: "250px",
+      },
+    },
+    screens: {
+      lg: "836px",
+      laptop: "621px",
     },
   },
   plugins: [],

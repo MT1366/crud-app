@@ -4,13 +4,17 @@ import LoginPage from "../components/LoginPage";
 import AdminPanel from "../components/AdminPanel";
 import ProtectedRoute from "../features/ProtectedRoute";
 import ClientPanel from "../components/Client";
+import HomePage from "../components/home/HomePage";
 
 const router = createBrowserRouter([
   {
     path: "/",
+    element: <HomePage />,
+  },
+  {
+    path: "/loginpage",
     element: <LoginPage />,
   },
-
   {
     path: "/dashboard",
     element: (

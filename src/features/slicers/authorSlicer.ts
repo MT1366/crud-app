@@ -1,19 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import privateAxios from "../services/privateAxios";
 
-export const fetchAuthor = createAsyncThunk(
-  "authors/fetchAuthors",
-  async () => {
-    try {
-      const response = await privateAxios.get("http://localhost:4000/authors");
-      const author = response.data;
-      return author;
-    } catch (error: any) {
-      console.log(error);
-    }
-  }
-);
-
 interface Author {
   id: string;
   name: string;
@@ -33,6 +20,18 @@ const initialState: AuthorState = {
   isRejected: false,
   authorName: "",
 };
+export const fetchAuthor = createAsyncThunk(
+  "authors/fetchAuthors",
+  async () => {
+    try {
+      const response = await privateAxios.get("http://localhost:4000/authors");
+      const author = response.data;
+      return author;
+    } catch (error: any) {
+      console.log(error);
+    }
+  }
+);
 
 const authorSlicer = createSlice({
   name: "author",

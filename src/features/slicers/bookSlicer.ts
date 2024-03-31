@@ -2,6 +2,19 @@ import privateAxios from "../services/privateAxios";
 
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
+import { Book } from "../Types/Book";
+
+interface BookState {
+  books: Book[];
+  isLoading: boolean;
+  isRejected: boolean;
+}
+
+const initialState: BookState = {
+  books: [],
+  isLoading: true,
+  isRejected: false,
+};
 
 export const fetchBooks = createAsyncThunk("books/fetchBooks", async () => {
   try {
@@ -16,6 +29,7 @@ export const fetchBooks = createAsyncThunk("books/fetchBooks", async () => {
 export const postBook = createAsyncThunk(
   "books/postBook",
   async (book, thunkAPI) => {
+    console.log(book);
     try {
       const response = await privateAxios.post(
         "http://localhost:4000/posts",
@@ -48,47 +62,24 @@ export const deleteBook = createAsyncThunk("books/deleteBook", async (id) => {
   }
 });
 
-export const editBook = createAsyncThunk(
-  "books/editBook",
-  async (book, thunkAPI) => {
-    try {
-      const response = await privateAxios.put(
-        `http://localhost:4000/posts?_post=${book}`,
-        book,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      toast.success(`You have edited a book 📚`);
+export const editBook = createAsyncThunk("books/editBook", async (book) => {
+  try {
+    const response = await privateAxios.put(
+      `http://localhost:4000/posts?_post=${book}`,
+      book,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    toast.success(`You have edited a book 📚`);
 
-      return response.data;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error);
-    }
+    return response.data;
+  } catch (error) {
+    return error;
   }
-);
-
-interface Book {
-  id: string;
-  title: string;
-  content: string;
-  date: string;
-  userId: string;
-}
-
-interface BookState {
-  books: Book[];
-  isLoading: boolean;
-  isRejected: boolean;
-}
-
-const initialState: BookState = {
-  books: [],
-  isLoading: true,
-  isRejected: false,
-};
+});
 
 const bookSlicer = createSlice({
   name: "books",

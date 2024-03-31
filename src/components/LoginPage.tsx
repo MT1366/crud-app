@@ -7,14 +7,14 @@ import { useSelector } from "react-redux";
 import { RootState } from "../store";
 import privateAxios from "../features/services/privateAxios";
 
-interface FormData {
+interface LoginFormData {
   username: string;
   password: string;
   token: string;
 }
 
 export default function LoginPage() {
-  const { register, handleSubmit, formState } = useForm<FormData>();
+  const { register, handleSubmit, formState } = useForm<LoginFormData>();
   const { errors } = formState;
   const navigate = useNavigate();
   const [cookies, setCookie] = useCookies(["token"]);
@@ -25,7 +25,7 @@ export default function LoginPage() {
     console.log(errors);
   }
 
-  function onSubmit(data: FormData) {
+  function onSubmit(data: LoginFormData) {
     privateAxios
       .post("http://localhost:4000/login", data)
       .then(function (response) {
@@ -48,13 +48,13 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex flex-col justify-center md:flex-row">
-      <div className="w-53 flex flex-col items-center justify-center">
+    <div className="flex flex-row justify-center md:flex-row">
+      <div className="w-54 flex flex-col items-center justify-center">
         <div className="flex flex-col items-center">
           <img src={logo} width={100} height={100} alt="LOGO" />
           <p className="text-blue-500 mb-10">Login to Shatel CRUD app</p>
         </div>
-        <div className="md:w-101">
+        <div className="md:w-101 w-101">
           <div className="flex flex-col justify-center shadow-lg border rounded-lg p-5">
             <CookiesProvider cookies={cookies}>
               <p>Enter your Authorized Username and Password.</p>
